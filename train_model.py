@@ -10,7 +10,7 @@ from Data.creata_data import create_sample
 class Model(nn.Module):
     def __init__(self):
         super(Model, self).__init__()
-        self.L1 = MultiheadAttentionLayer(4,1)[0]
+        self.L1 = MultiheadAttentionLayer(4,1)
         self.L2 = DenseLayer(4,1, nn.functional.sigmoid)
 
     def forward(self, x):

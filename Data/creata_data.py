@@ -4,7 +4,7 @@ import random
 import pickle
 
 
-def create_sample(num_vectors=10000, name="training_sample_10000", vector_dimension=4, save_as_pickle=False):
+def create_sample(num_vectors=10000, name="training_sample_10000", vector_dimension=4, seed=42, save_as_pickle=False):
     """
     Create a synthetic dataset with random vectors and corresponding labels.
 
@@ -18,7 +18,7 @@ def create_sample(num_vectors=10000, name="training_sample_10000", vector_dimens
         list: A list containing random vectors and their corresponding labels.
     """
     # Set the seed for reproducibility (optional)
-    np.random.seed(42)
+    np.random.seed(seed)
 
     # Generate random vectors with components in the range [-100, 100]
     random_vectors = np.random.uniform(low=-100, high=100, size=(num_vectors, vector_dimension))

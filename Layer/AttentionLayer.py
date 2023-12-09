@@ -47,7 +47,7 @@ def attention(q, k, v, dropout=None, mask=None):
         torch.Tensor: Attention-based output.
     """
     att_matrix = attention_matrix(q, k, v, dropout=dropout, mask=mask)
-    return torch.matmul(att_matrix, v)
+    return torch.matmul(att_matrix, v), att_matrix
 
 
 class MultiheadAttentionLayer(nn.Module):
@@ -68,6 +68,8 @@ class MultiheadAttentionLayer(nn.Module):
         self.input_size = input_size
         self.num_heads = num_heads
         self.head_size = input_size // num_heads
+        self.attention_matrix = None
+        self.attention_based_v = None
 
         # Linear projections for Query, Key, and Value
         self.W_q = nn.Linear(input_size, input_size, bias=False)
@@ -110,13 +112,13 @@ class MultiheadAttentionLayer(nn.Module):
         v = v.view(v.size(0), -1, self.num_heads, self.head_size).transpose(1, 2)
 
         # Scaled Dot-Product Attention
-        attention_based_v = attention(q, k, v)
+        self.attention_based_v, self.attention_matrix = attention(q, k, v)
 
         # Concatenate and project back to the original size
-        attention_based_v = attention_based_v.transpose(1, 2).contiguous().view(x.size(0), -1, self.input_size)
-        output = self.W_o(attention_based_v)
+        self.attention_based_v = aself.ttention_based_v.transpose(1, 2).contiguous().view(x.size(0), -1, self.input_size)
+        self.attention_based_v = self.W_o(self.attention_based_v)
 
-        return output.squeeze(dim=1), attention_matrix
+        return self.attention_based_v .squeeze(dim=1)
 
 
 class TestMultiheadAttention(unittest.TestCase):
