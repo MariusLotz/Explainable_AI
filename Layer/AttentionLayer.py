@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import math
 import unittest
 
-def attention_matrix(q, k, v, dropout=None, mask=None):
+def attention_matrix(q, k, dropout=None, mask=None):
     """
     Compute the attention matrix given Query, Key, and Value tensors.
 
@@ -19,7 +19,8 @@ def attention_matrix(q, k, v, dropout=None, mask=None):
         torch.Tensor: Attention matrix.
     """
     d_k = q.size(-1) 
-    scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(d_k) 
+    scores = torch.matmul(q.transpose(-2,-1), k) / math.sqrt(d_k) 
+ 
 
     if mask is not None:
         scores = scores.masked_fill(mask == 0, -1e9)  # Set a very high negative attention score for masked entries.
@@ -46,8 +47,10 @@ def attention(q, k, v, dropout=None, mask=None):
     Returns:
         torch.Tensor: Attention-based output.
     """
-    att_matrix = attention_matrix(q, k, v, dropout=dropout, mask=mask)
-    return torch.matmul(att_matrix, v), att_matrix
+
+    att_matrix = attention_matrix(q, k)
+    #print(att_matrix)
+    return torch.matmul(v, att_matrix), att_matrix
 
 
 class MultiheadAttentionLayer(nn.Module):
@@ -113,12 +116,13 @@ class MultiheadAttentionLayer(nn.Module):
 
         # Scaled Dot-Product Attention
         self.attention_based_v, self.attention_matrix = attention(q, k, v)
+        #print(self.attention_matrix)
 
         # Concatenate and project back to the original size
-        self.attention_based_v = aself.ttention_based_v.transpose(1, 2).contiguous().view(x.size(0), -1, self.input_size)
+        self.attention_based_v = self.attention_based_v.transpose(1, 2).contiguous().view(x.size(0), -1, self.input_size)
         self.attention_based_v = self.W_o(self.attention_based_v)
 
-        return self.attention_based_v .squeeze(dim=1)
+        return self.attention_based_v.squeeze(dim=1)
 
 
 class TestMultiheadAttention(unittest.TestCase):

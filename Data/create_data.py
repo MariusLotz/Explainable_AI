@@ -4,7 +4,7 @@ import random
 import pickle
 
 
-def create_sample(num_vectors=10000, name="training_sample_10000", vector_dimension=4, seed=42, save_as_pickle=False):
+def create_sample(num_vectors=10000, name="training_sample_10000", vector_dimension=4, seed=41, save_as_pickle=False):
     """
     Create a synthetic dataset with random vectors and corresponding labels.
 
@@ -38,7 +38,7 @@ def create_sample(num_vectors=10000, name="training_sample_10000", vector_dimens
 
 if __name__ == "__main__":
     # Example: Create and save a dataset with 10,000 random vectors
-    dataset_name = "10000_trainingsample_4dim"
-    create_sample(10000, dataset_name, vector_dimension=4, save_as_pickle=True)
+    dataset_name = "10000_testsample_4dim"
+    create_sample(1000, dataset_name, vector_dimension=4, save_as_pickle=True)
 
     
