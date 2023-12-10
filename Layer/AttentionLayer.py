@@ -71,6 +71,8 @@ class MultiheadAttentionLayer(nn.Module):
         self.input_size = input_size
         self.num_heads = num_heads
         self.head_size = input_size // num_heads
+        self.attention_matrix_list = []
+        self.attention_based_v_list = []
         self.attention_matrix = None
         self.attention_based_v = None
 
@@ -120,9 +122,12 @@ class MultiheadAttentionLayer(nn.Module):
 
         # Concatenate and project back to the original size
         self.attention_based_v = self.attention_based_v.transpose(1, 2).contiguous().view(x.size(0), -1, self.input_size)
-        self.attention_based_v = self.W_o(self.attention_based_v)
+        self.attention_based_v = self.W_o(self.attention_based_v).squeeze(dim=1)
+        self.attention_matrix = self.attention_matrix.squeeze()
+        self.attention_matrix_list.append(self.attention_matrix)
+        self.attention_based_v_list.append(self.attention_based_v)
 
-        return self.attention_based_v.squeeze(dim=1)
+        return self.attention_based_v
 
 
 class TestMultiheadAttention(unittest.TestCase):
