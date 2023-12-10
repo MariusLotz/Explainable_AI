@@ -2,7 +2,7 @@
 
 ## Overview
 
-Welcome to the "project whatever" repository! This project features a minimal binary classification model with an integrated Attention layer. This implementation is designed for rapid experimentation and is not intended for production use. It serves as a tool to explore the behavior of the Attention matrix and attention-based embedding for simple toy problems.
+Welcome to the "Explainable_AI" repository! This project features a minimal binary classification model with an integrated Attention layer. This implementation is designed for rapid experimentation and is not intended for production use. It serves as a tool to explore the behavior of the Attention matrix and attention-based embedding for simple toy problems.
 
 ## Features
 
