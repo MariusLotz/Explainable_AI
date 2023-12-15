@@ -27,15 +27,15 @@ def plot_confusion_matrix(cm, class_names, save_path=None):
     else:
         plt.show()
 
-def main():
+def main(model_path, test_data_path, save_path):
     """Main script for evaluating the trained model."""
     # Create and load the model
     model = Model()
-    model.load_state_dict(torch.load("model_post_training"))  
+    model.load_state_dict(torch.load(model_path))  
     model.eval()
 
     # Load and convert evaluation data
-    with open("Data/1000_testsample_4dim.pkl", 'rb') as file:
+    with open(test_data_path, 'rb') as file:
         sample = pickle.load(file)
     x_data = torch.tensor(sample[0], dtype=torch.float32)
     all_targets = torch.tensor(sample[1], dtype=torch.float32)
@@ -57,8 +57,7 @@ def main():
 
     # Plot and save the confusion matrix
     class_names = ['Class 0', 'Class 1']  # Replace with your actual class names
-    save_path = 'confusion_matrix_post.png'  # Specify the desired file path
     plot_confusion_matrix(cm, class_names, save_path)
 
 if __name__ == "__main__":
-    main()
+    main("model_pre_training2", "Data/1000_testsample_4dim_2.pkl", "pictures/confusion_matrix_pre_2.png"  )

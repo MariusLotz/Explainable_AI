@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import random
 import pickle
 
-def class_vec_by_norm(vector, threshold=50):
+def class_vec_by_norm(vector, threshold=200):
     """
     Classify a vector based on its Euclidean norm.
 
@@ -57,7 +57,7 @@ def create_sample(num_vectors=10000, name="training_sample_10000", vector_dimens
 
 if __name__ == "__main__":
     # Example: Create and save a dataset with 10,000 random vectors
-    dataset_name = "1000_testsample_4dim_2"
-    create_sample(1000, dataset_name, vector_dimension=4, save_as_pickle=True)
+    dataset_name = "10000_trainingsample_4dim_2"
+    create_sample(10000, dataset_name, vector_dimension=4, save_as_pickle=True)
 
     

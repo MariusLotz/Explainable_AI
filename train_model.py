@@ -62,19 +62,25 @@ def train_model(model, data_loader, criterion, optimizer, epochs=1000):
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=2)
             optimizer.step()
 
+            if torch.isnan(loss):
+                print(f'Loss became NaN at epoch {epoch + 1}. Training stopped.')
+                break
+
         if (epoch + 1) % 100 == 0:
             print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.4f}')
 
     return model
 
-def train():
+def train(number):
     my_model = Model()
+    model_path = "model_pre_training" + str(number)
+    #torch.save(my_model.state_dict(), model_path)
     my_criterion = nn.BCELoss()
     my_optimizer = optim.Adam(my_model.parameters(), lr=0.01)
     my_batch_size = 128
-    my_num_epochs = 1000  # Add the number of epochs here
+    my_num_epochs = 400  # Add the number of epochs here
 
-    with open("Data/10000_trainingsample_4dim.pkl", 'rb') as file:
+    with open("Data/10000_trainingsample_4dim_2.pkl", 'rb') as file:
         my_sample = pickle.load(file)
     
     my_dataset = TensorDataset(torch.tensor(my_sample[0], dtype=torch.float32), torch.tensor(my_sample[1], dtype=torch.float32))
@@ -82,10 +88,10 @@ def train():
 
     trained_model = train_model(my_model, my_data_loader, my_criterion, my_optimizer, epochs=my_num_epochs)
 
-    model_path = "model_post_training"
+    model_path = "model_post_training" + str(number)
     torch.save(trained_model.state_dict(), model_path)
 
 
 
 if __name__ == "__main__":
-    train()
+    train(2)

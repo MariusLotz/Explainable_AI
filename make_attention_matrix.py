@@ -9,11 +9,11 @@ import statistics
 
 
 
-def main():
+def main(model_path):
     """Main script for evaluating the trained model."""
     # Create and load the model
     model = Model()
-    model.load_state_dict(torch.load("model_post_training"))  
+    model.load_state_dict(torch.load(model_path))  
     model.eval()
 
     # Load and convert evaluation data
@@ -47,6 +47,7 @@ def main():
     print(mean_matrix_emb)
     print(mean_x)
 
+"""
     # Visualize the matrix
     plt.figure(figsize=(6, 6))
     plt.imshow(mean_matrix_list.detach().numpy(), cmap='viridis', interpolation='nearest')
@@ -59,6 +60,7 @@ def main():
     plt.stem(mean_matrix_emb.detach().numpy())
     plt.title('Vector Visualization')
     plt.savefig('Vector_visualization.png')
+"""
     
 if __name__ == "__main__":
-    main()
+    main("model_post_training2")
