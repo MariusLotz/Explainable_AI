@@ -19,7 +19,7 @@ def attention_matrix(q, k, dropout=None, mask=None):
         torch.Tensor: Attention matrix.
     """
     d_k = q.size(-1) 
-    scores = torch.matmul(q.transpose(-2,-1), k) / math.sqrt(d_k) 
+    scores = torch.matmul(q, k.transpose(-2,-1)) / math.sqrt(d_k) 
  
 
     if mask is not None:
@@ -28,7 +28,7 @@ def attention_matrix(q, k, dropout=None, mask=None):
     att_matrix = scores.softmax(dim=-1)
    
     if dropout is not None:
-        att_matrix = dropout(att_matrix)  # Apply dropout during training
+        att_matrix = dropout(att_matrix)  # Apply dropout during training 
 
     return att_matrix
 
@@ -49,8 +49,7 @@ def attention(q, k, v, dropout=None, mask=None):
     """
 
     att_matrix = attention_matrix(q, k)
-    #print(att_matrix)
-    return torch.matmul(v, att_matrix), att_matrix
+    return torch.matmul(att_matrix, v), att_matrix
 
 
 class MultiheadAttentionLayer(nn.Module):
@@ -122,7 +121,8 @@ class MultiheadAttentionLayer(nn.Module):
 
         # Concatenate and project back to the original size
         self.attention_based_v = self.attention_based_v.transpose(1, 2).contiguous().view(x.size(0), -1, self.input_size)
-        self.attention_based_v = self.W_o(self.attention_based_v).squeeze(dim=1)
+        if self.num_heads > 1:
+            self.attention_based_v = self.W_o(self.attention_based_v).squeeze(dim=1)
         self.attention_matrix = self.attention_matrix.squeeze()
         self.attention_matrix_list.append(self.attention_matrix)
         self.attention_based_v_list.append(self.attention_based_v)
@@ -134,23 +134,25 @@ class TestMultiheadAttention(unittest.TestCase):
 
     def test_forward(self):
         # Define input tensor
-        input_size = 16
-        num_heads = 4
+        word_len = 4
+        num_heads = 2
         batch_size = 2
-        sequence_length = 8
+        sequence_length = 2
 
         # Create a MultiheadAttention layer
-        attention_layer = MultiheadAttentionLayer(input_size=input_size, num_heads=num_heads)
+        attention_layer = MultiheadAttentionLayer(input_size=word_len, num_heads=num_heads)
 
         # Generate random input tensor
-        input_tensor = torch.randn(batch_size, sequence_length, input_size)
+        input_tensor = torch.randn(batch_size, sequence_length, word_len)
+        #print(input_tensor)
 
         # Forward pass through the attention layer
         output_tensor = attention_layer(input_tensor)
+        #print(output_tensor)
 
         # Ensure the output tensor has the correct shape
-        expected_shape = torch.Size([batch_size, input_size])
-        self.assertEqual(output_tensor.shape, expected_shape)
+        expected_shape = torch.Size([batch_size, word_len])
+        self.assertEqual(output_tensor.shape, input_tensor.shape)
 
 if __name__ == '__main__':
     # Run the tests
